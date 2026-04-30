@@ -29,13 +29,13 @@ export default function Sidebar() {
       }
     })
   }, [])
-
-  if (pathname.startsWith('/login') || pathname.startsWith('/signup')) return null
+  if (pathname === '/' || pathname.startsWith('/login') || pathname.startsWith('/signup')) return null
 
   const navLinks = [
     { href: '/feed', label: 'Feed', icon: <HomeIcon /> },
     { href: '/explore', label: 'Explore', icon: <SearchIcon /> },
     { href: '/new-post', label: 'New post', icon: <PlusIcon /> },
+    { href: '/search-users', label: 'Find friends', icon: <FriendsIcon /> },
     { href: '/saved', label: 'Saved', icon: <BookmarkIcon /> },
     { href: '/profile', label: 'Profile', icon: <UserIcon /> },
   ]
@@ -104,4 +104,7 @@ function BookmarkIcon() {
 }
 function UserIcon() {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+}
+function FriendsIcon() {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
 }

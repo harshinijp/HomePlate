@@ -2,12 +2,14 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
+import { use } from 'react'
 
 const AVATAR_COLORS = ['#D4763A', '#5B8A3C', '#3B8BD4', '#E8C547', '#7F77DD', '#1D9E75']
 function avatarColor(str: string) { return AVATAR_COLORS[(str?.charCodeAt(0) || 0) % AVATAR_COLORS.length] }
 function initials(str: string) { return (str || 'U').slice(0, 2).toUpperCase() }
 
-export default function ProfilePage({ params }: { params: { username: string } }) {
+export default function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
+  const { username } = use(params)
   const supabase = createClient()
   const [profile, setProfile] = useState<any>(null)
   const [posts, setPosts] = useState<any[]>([])
@@ -27,7 +29,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
       const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
-        .eq('username', params.username)
+        .eq('username', username)
         .single()
 
       if (!profileData) { setLoading(false); return }
@@ -56,7 +58,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
       setLoading(false)
     }
     load()
-  }, [params.username])
+  }, [username])
 
   async function toggleFollow() {
     if (!currentUser || !profile) return
@@ -110,6 +112,11 @@ export default function ProfilePage({ params }: { params: { username: string } }
       </div>
 
       <div className="profile-grid">
+        {displayPosts.length === 0 && (
+          <div style={{ gridColumn: '1/-1', color: 'var(--text-muted)', padding: '40px 0', fontSize: 13 }}>
+            {tab === 'posts' ? 'No dishes posted yet.' : 'No saved dishes yet.'}
+          </div>
+        )}
         {displayPosts.map((post: any) => (
           <Link key={post.id} href={`/post/${post.id}`} className="profile-grid-item" style={{ textDecoration: 'none' }}>
             {post.image_url

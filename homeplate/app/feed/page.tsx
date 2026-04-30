@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import PostCard from '@/components/PostCard'
+import PostCard from '@/app/components/PostCard'
 import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
 
