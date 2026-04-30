@@ -5,8 +5,8 @@ import { createClient } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 
 const AVATAR_COLORS = ['#D4763A', '#5B8A3C', '#3B8BD4', '#E8C547', '#7F77DD', '#1D9E75']
-function avatarColor(str: string) { return AVATAR_COLORS[str.charCodeAt(0) % AVATAR_COLORS.length] }
-function initials(name: string) { return name.slice(0, 2).toUpperCase() }
+function avatarColor(str: string) { return AVATAR_COLORS[(str?.charCodeAt(0) || 0) % AVATAR_COLORS.length] }
+function initials(name: string) { return (name || 'U').slice(0, 2).toUpperCase() }
 
 export default function Sidebar() {
   const pathname = usePathname()
@@ -29,7 +29,11 @@ export default function Sidebar() {
       }
     })
   }, [])
+
   if (pathname === '/' || pathname.startsWith('/login') || pathname.startsWith('/signup')) return null
+
+  const username = user?.email?.split('@')[0] || ''
+  const profileHref = username ? `/profile/${username}` : '/login'
 
   const navLinks = [
     { href: '/feed', label: 'Feed', icon: <HomeIcon /> },
@@ -37,7 +41,6 @@ export default function Sidebar() {
     { href: '/new-post', label: 'New post', icon: <PlusIcon /> },
     { href: '/search-users', label: 'Find friends', icon: <FriendsIcon /> },
     { href: '/saved', label: 'Saved', icon: <BookmarkIcon /> },
-    { href: '/profile', label: 'Profile', icon: <UserIcon /> },
   ]
 
   return (
@@ -58,6 +61,14 @@ export default function Sidebar() {
         </Link>
       ))}
 
+      <Link
+        href={profileHref}
+        className={`nav-link${pathname.startsWith('/profile') ? ' active' : ''}`}
+      >
+        <UserIcon />
+        Profile
+      </Link>
+
       {friends.length > 0 && (
         <div className="friends-section">
           <div className="friends-label">Friends</div>
@@ -76,12 +87,12 @@ export default function Sidebar() {
       )}
 
       {user && (
-        <Link href="/profile" className="sidebar-user">
+        <Link href={profileHref} className="sidebar-user">
           <div className="avatar" style={{ background: avatarColor(user.email || '') }}>
-            {initials(user.email || 'U')}
+            {initials(username)}
           </div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 500 }}>{user.email?.split('@')[0]}</div>
+            <div style={{ fontSize: 13, fontWeight: 500 }}>{username}</div>
             <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>View profile</div>
           </div>
         </Link>
