@@ -33,16 +33,24 @@ export async function POST(req: NextRequest) {
           { headers: { 'Authorization': `Bearer ${token}` } }
         )
         const data = await res.json()
+        console.log('FULL RESPONSE for', ingredient, ':', JSON.stringify(data).slice(0, 500))
+
         const food = data.foods?.food
         const item = Array.isArray(food) ? food[0] : food
-        if (!item) return null
+        if (!item) {
+          console.log('NO ITEM FOUND for', ingredient)
+          return null
+        }
 
-        // FatSecret returns nutrition per 100g in the description
-        const cal = parseFloat(item.food_description?.match(/Calories:\s*([\d.]+)/)?.[1] || '0')
-        const fat = parseFloat(item.food_description?.match(/Fat:\s*([\d.]+)/)?.[1] || '0')
-        const carbs = parseFloat(item.food_description?.match(/Carbs:\s*([\d.]+)/)?.[1] || '0')
-        const protein = parseFloat(item.food_description?.match(/Protein:\s*([\d.]+)/)?.[1] || '0')
+        console.log('RAW DESCRIPTION:', item.food_description)
 
+        const desc = item.food_description || ''
+        const cal     = parseFloat(desc.match(/Calories:\s*([\d.]+)/i)?.[1] || '0')
+        const fat     = parseFloat(desc.match(/Fat:\s*([\d.]+)/i)?.[1] || '0')
+        const carbs   = parseFloat(desc.match(/Carbs:\s*([\d.]+)/i)?.[1] || '0')
+        const protein = parseFloat(desc.match(/Protein:\s*([\d.]+)/i)?.[1] || '0')
+
+        console.log(`PARSED ${ingredient}: cal=${cal} fat=${fat} carbs=${carbs} protein=${protein}`)
         return { cal, fat, carbs, protein }
       })
     )

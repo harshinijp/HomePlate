@@ -196,7 +196,7 @@ export default function NewPostPage() {
         </div>
         {ingredients.length > 0 && !nutrition && (
           <button className="btn btn-outline btn-sm" style={{ marginTop: 10 }} onClick={analyzeNutrition} disabled={nutritionLoading}>
-            {nutritionLoading ? 'Analyzing...' : 'Analyze nutrition via Edamam'}
+            {nutritionLoading ? 'Analyzing...' : 'Analyze nutrition'}
           </button>
         )}
       </div>
@@ -205,7 +205,7 @@ export default function NewPostPage() {
         <div className="form-section">
           <div className="success-banner">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
-            Nutrition analyzed successfully via Edamam API
+            Nutrition analyzed successfully
           </div>
           <div className="nutrition-panel">
             <div className="nutrition-label">Nutrition per serving (serves {servings})</div>
